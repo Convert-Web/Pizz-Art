@@ -1,0 +1,204 @@
+LE TOUAREG – SITE VITRINE + COMMANDE WHATSAPP
+Montereau-Fault-Yonne · kebab, french tacos, burgers, pizzas, paninis
+Site réalisé par ConvertWEB
+==========================================================================
+
+CONTENU DU DOSSIER
+
+  index.html   La page + tous les réglages du restaurant (bloc « window.SITE »,
+               tout en bas du fichier : nom, adresse, horaires, contact…)
+  style.css    Le design (couleurs, polices, mise en page)
+  app.js       La carte (plats et prix), le panier, la commande WhatsApp
+  img/         Photos, icônes, image de partage
+  fonts/       Polices, hébergées avec le site (rien n'est chargé ailleurs).
+               Utilisées : Lilita One (titres), DM Sans (texte), Sedgwick Ave
+               Display (petites notes à la main). Le fichier dela-gothic-one
+               de l'ancienne version peut être supprimé.
+
+Rien à installer. Pour tester sur ton ordinateur : double-clic sur index.html.
+Pour modifier : ouvrir les fichiers avec un éditeur de texte (Bloc-notes,
+VS Code…). Ne jamais les ouvrir avec Word.
+
+
+0. LES COULEURS
+---------------
+
+  Tout le design est dans style.css. Les couleurs sont regroupées tout en haut,
+  dans le bloc « :root » : --night (fond brun nuit), --cream (crème), --saffron
+  (safran, prix et boutons), --ember (braise), --chili (piment). Changer une
+  valeur change tout le site.
+
+
+1. METTRE LE SITE EN LIGNE (GitHub Pages, gratuit)
+--------------------------------------------------
+
+  1. Créer un dépôt GitHub public (ex. « Le-Touareg »).
+  2. Envoyer TOUT le contenu de ce dossier à la racine du dépôt
+     (index.html doit être à la racine, pas dans un sous-dossier).
+  3. Settings > Pages > Source : « Deploy from a branch », branche main,
+     dossier /(root) > Save.
+  4. Au bout d'une minute, le site est sur https://NOM.github.io/Le-Touareg/
+  5. IMPORTANT : mettre l'adresse définitive à DEUX endroits dans index.html :
+       - dans le <head> (en haut) : canonical, og:url, og:image, twitter:image ;
+       - dans le bloc SITE : la ligne « domain ».
+     (Les réseaux sociaux lisent le <head> tel quel, d'où les deux endroits.)
+     Pour un nom de domaine perso : Settings > Pages > Custom domain.
+
+
+2. MODIFIER LES INFOS DU RESTAURANT (bloc « window.SITE » de index.html)
+------------------------------------------------------------------------
+
+  Tout est commenté dans le fichier. Les points importants :
+
+  whatsapp      Numéro de commande, format international sans + ni espaces
+                (ex. 33673827821). Il doit être actif sur WhatsApp et surveillé
+                pendant les horaires : c'est là qu'arrivent les commandes.
+  phone         Numéro des liens « Appeler » (avec +33…).
+  hours         Horaires. 0 = dimanche, 1 = lundi … 6 = samedi.
+                Un créneau : [['11:00','22:45']]
+                Deux créneaux : [['11:30','14:30'],['18:00','23:00']]
+                Fermé après minuit : [['18:00','02:00']]
+                Jour fermé : []
+                Le statut « Ouvert / Fermé » et les créneaux de retrait suivent
+                ces horaires, à l'heure de Paris.
+  prepMinutes   Délai minimum avant un retrait programmé (15 par défaut).
+  ratingValue / ratingCount   Note affichée (4,2 / 180+).
+  payments      Titres-restaurant acceptés (liste affichée sur le site).
+  uberEatsUrl   Coller le lien de la fiche Uber Eats : un bouton « Livraison
+                Uber Eats » apparaît en haut de page. Laisser '' pour le masquer.
+  demoMode      true = bandeau « site de démonstration » et pas d'indexation par
+                Google. false pour le site final.
+
+  Textes de la page d'accueil : dans index.html (cherche le texte à changer).
+  Questions fréquentes (FAQ) : dans app.js, fonction faqItems.
+  Attention : le <head> (titre et description pour Google, partage) et le bloc
+  <noscript> (en bas d'index.html) répètent l'adresse, les horaires et le
+  téléphone en dur. Si ces infos changent, les modifier aussi à ces endroits.
+
+
+3. LES PRIX
+-----------
+
+  Les prix saisis sont ceux de la carte fournie (plateforme de livraison).
+  Ces prix sont en général majorés d'environ 30 % par rapport au comptoir.
+  Pour afficher les prix du comptoir, dans le bloc SITE :
+        priceFactor: 1 / 1.3
+  (6,50 € deviennent 5,00 €, 7,80 € deviennent 6,00 €, etc.)
+  Valeur par défaut : 1 = prix de la carte tels quels.
+
+
+4. LA CARTE (app.js, liste PRODUCTS)
+------------------------------------
+
+  Une ligne = un plat. Exemple :
+  { id:2, cat:'sandwichs', name:'Sandwich kebab', desc:'Viande kebab, salade…',
+    price:7.80, menu:10.40, pop:1, img:'kebab', sauces:1 },
+
+    id       Numéro unique du plat. Ne jamais réutiliser un numéro.
+    cat      Catégorie (voir la liste CATEGORIES, en haut de app.js : c'est
+             aussi l'ordre d'affichage).
+    name     Nom affiché.       desc   Description (2 lignes sur la carte).
+    price    Prix du plat seul, en euros, avec un POINT (7.80).
+    menu     Prix en menu (plat + frites + boisson). Supprimer pour un plat
+             qui n'existe pas en menu.
+    pop      Rang dans la sélection « Populaires » (1 = en premier). Optionnel.
+    img      Photo (voir point 6). À défaut, une illustration : tile:'wrap'
+             (ou burger, pizza, panini, croque, plate, bucket, bites, salad,
+             dessert, tiramisu, turkish, can).
+    meats    Nombre de viandes à choisir (ex. 2 = deux viandes au choix).
+    meatList 'pizza' pour utiliser la liste de viandes des pizzas.
+    base     1 = le client choisit la base (tomate ou crème).
+    sauces   1 = le client peut choisir jusqu'à 2 sauces (réglage MAX_SAUCES).
+
+  Ajouter un plat : copier une ligne, lui donner un nouvel id (le plus grand
+  numéro + 1), changer le texte et le prix.
+  Retirer un plat : supprimer sa ligne.
+
+  Listes d'options (haut de app.js, « COMPOSITION DES PLATS ») : MEATS,
+  MEATS_PIZZA, SAUCES, BASES, DRINKS. Ces listes ont été déduites de la carte :
+  À FAIRE VALIDER PAR LE RESTAURANT (viandes, sauces, boissons du menu).
+
+
+5. PLATS ÉPUISÉS
+----------------
+
+  a) Pendant le service, sur le téléphone du restaurant :
+     lien « Espace équipe » tout en bas de la page > code 4821 > un appui sur un
+     plat le marque épuisé (il disparaît de la commande), un autre appui le
+     remet en vente. Ce réglage est propre à l'appareil utilisé : les clients
+     ne le voient pas. Pour le rendre visible de tous, voir b).
+  b) Pour tous les clients : dans le bloc SITE, soldOut: [12, 25]
+     (numéros de plats, affichés « n° 12 » dans l'Espace équipe).
+     Retirer le numéro pour remettre le plat en vente.
+
+  Changer le code de l'Espace équipe : ouvrir le site, ouvrir la console du
+  navigateur (touche F12) et taper (en remplaçant NOUVEAU_CODE) :
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode('NOUVEAU_CODE')).then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
+  Coller le résultat dans vendorPinHash (bloc SITE).
+  Attention : ce code protège seulement l'écran (le site est statique, il n'y a
+  aucune donnée sensible derrière).
+
+
+6. PHOTOS
+---------
+
+  Les photos fournies sont des images d'ILLUSTRATION : à remplacer par de vraies
+  photos du Touareg avant la mise en ligne (idéalement des carrés, bien
+  éclairés, pris de dessus ou à 45 degrés).
+
+  Fichiers du dossier img/ (format WebP, léger ; conversion gratuite sur
+  squoosh.app) :
+    kebab, tacos, burger, fries, nuggets, pizza, lipton, pepsi, coca
+        -240.webp  carré 240 x 240   (version mobile)
+        -480.webp  carré 480 x 480   (version nette, pour kebab/tacos/burger)
+        (pizza : seulement -240.webp, c'est l'image de la catégorie Pizzas)
+    plateau-840.webp   840 x 560, photo principale de l'accueil
+    og-image.jpg       1200 x 630, aperçu quand on partage le lien
+    favicon.svg, favicon-32.png, apple-touch-icon.png   icônes du site
+
+  Remplacer une photo : garder exactement le même nom de fichier.
+  Ajouter une photo : déposer img/nom-240.webp, ajouter nom:[240] dans la liste
+  IMGS de app.js, puis mettre img:'nom' sur le plat concerné.
+
+
+7. COMMENT SE PASSE UNE COMMANDE
+--------------------------------
+
+  Le client compose son plat (seul ou en menu, viandes, sauces, boisson), ajoute
+  au panier, indique son prénom et l'heure de retrait, puis appuie sur « Envoyer
+  sur WhatsApp » : WhatsApp s'ouvre avec le message déjà écrit (plats, options,
+  total, retrait), adressé au numéro du restaurant. La commande n'est
+  définitive qu'après la réponse du restaurant. Paiement sur place, au retrait
+  (pas de paiement en ligne). Un bouton « Copier la commande » existe en secours.
+  Quand le restaurant est fermé, le client programme un créneau pour la
+  prochaine ouverture.
+
+
+8. MENTIONS LÉGALES (à vérifier avant la mise en ligne)
+-------------------------------------------------------
+
+  Les pages Mentions légales, Confidentialité et Allergènes sont générées
+  depuis SITE.legal (bloc SITE). Les informations de société ont été reprises
+  du numéro SIRET fourni (registre public) : VÉRIFIER qu'elles correspondent
+  bien au restaurant (raison sociale, forme, gérant, RCS).
+  Les champs écrits entre crochets [ ] s'affichent sur fond jaune dans le site
+  tant qu'ils ne sont pas complétés : capital, médiateur de la consommation,
+  durée de conservation des messages, allergènes. Remplace-les par une phrase
+  normale (sans crochets).
+
+
+9. LISTE À VALIDER AVEC LE RESTAURANT AVANT LA MISE EN LIGNE
+------------------------------------------------------------
+
+  [ ] Prix : ceux de la plateforme (priceFactor 1) ou ceux du comptoir (1 / 1.3)
+  [ ] Viandes, sauces, bases et boissons proposées (listes du point 4)
+  [ ] « Menu » = plat + frites + boisson, pour tous les plats qui ont un prix menu
+  [ ] Numéro WhatsApp actif et surveillé ; adresse e-mail de contact
+  [ ] Horaires et titres-restaurant acceptés en boutique
+  [ ] Note affichée (4,2 / 180+ avis) : vérifier d'où elle vient (Google, Uber Eats…)
+      et la mettre à jour (ratingValue / ratingCount)
+  [ ] Vraies photos des plats (point 6)
+  [ ] Lien Uber Eats, si le restaurant veut le mettre en avant (uberEatsUrl)
+  [ ] Mentions légales complétées (point 8)
+  [ ] Adresse définitive du site dans le <head> ET dans SITE.domain (point 1)
+  [ ] Code de l'Espace équipe changé (point 5)
